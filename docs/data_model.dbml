@@ -1,0 +1,38 @@
+Table fact_flights {
+  flight_key varchar [pk]
+  date_key date [ref: > dim_date.date_key]
+  airline_key varchar [ref: > dim_airline.airline_key]
+  airport_key varchar [ref: > dim_airport.airport_key]
+  other_airport_iata varchar
+  direction varchar
+  flight_id varchar
+  flight_status varchar
+  scheduled_utc timestamp
+  estimated_utc timestamp
+  actual_utc timestamp
+  delay_minutes integer
+  is_delayed boolean
+  is_cancelled boolean
+}
+
+Table dim_airline {
+  airline_key varchar [pk]
+  iata_code varchar
+  icao_code varchar
+  airline_name varchar
+}
+
+Table dim_airport {
+  airport_key varchar [pk]
+  icao_code varchar
+  airport_name varchar
+  display_name varchar
+}
+
+Table dim_date {
+  date_key date [pk]
+  year integer
+  month integer
+  day integer
+  weekday_name varchar
+}
