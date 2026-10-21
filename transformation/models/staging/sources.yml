@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: raw
+    database: flights_db
+    schema: raw
+    tables:
+      - name: arrivals
+      - name: departures
+      - name: airports
+      - name: wikipedia_airlines
+      - name: wikipedia_airports
