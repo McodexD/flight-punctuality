@@ -1,0 +1,42 @@
+version: 2
+
+models:
+  - name: fact_flights
+    columns:
+      - name: flight_key
+        data_tests:
+          - unique
+          - not_null
+      - name: airline_key
+        data_tests:
+          - relationships:
+              to: ref('dim_airline')
+              field: airline_key
+      - name: airport_key
+        data_tests:
+          - relationships:
+              to: ref('dim_airport')
+              field: airport_key
+      - name: date_key
+        data_tests:
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+  - name: dim_airline
+    columns:
+      - name: airline_key
+        data_tests:
+          - unique
+          - not_null
+  - name: dim_airport
+    columns:
+      - name: airport_key
+        data_tests:
+          - unique
+          - not_null
+  - name: dim_date
+    columns:
+      - name: date_key
+        data_tests:
+          - unique
+          - not_null
