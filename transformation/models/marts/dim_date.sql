@@ -1,6 +1,6 @@
 with flight_dates as (
     select distinct
-        cast(convert_timezone('UTC', scheduled_utc) as timestamp_ntz)::date as date_key
+        cast(convert_timezone('Europe/Stockholm', scheduled_utc) as timestamp_ntz)::date as date_key
     from {{ ref('stg_flights') }}
     where scheduled_utc is not null
 )

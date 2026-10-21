@@ -5,7 +5,7 @@ with flights as (
 calculated as (
     select
         flight_key,
-        cast(convert_timezone('UTC', scheduled_utc) as timestamp_ntz)::date as date_key,
+        cast(convert_timezone('Europe/Stockholm', scheduled_utc) as timestamp_ntz)::date as date_key,
         coalesce(airline_icao, airline_iata, 'UNKNOWN') as airline_key,
         airport_iata as airport_key,
         other_airport_iata,
