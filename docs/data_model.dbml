@@ -20,6 +20,8 @@ Table dim_airline {
   iata_code varchar
   icao_code varchar
   airline_name varchar
+  country_region varchar
+  telephony_designator varchar
 }
 
 Table dim_airport {
@@ -27,6 +29,7 @@ Table dim_airport {
   icao_code varchar
   airport_name varchar
   display_name varchar
+  city varchar
 }
 
 Table dim_date {
