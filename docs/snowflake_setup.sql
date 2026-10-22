@@ -1,0 +1,51 @@
+USE ROLE SECURITYADMIN;
+CREATE ROLE IF NOT EXISTS loader_role;
+CREATE ROLE IF NOT EXISTS transformer_role;
+CREATE ROLE IF NOT EXISTS reporter_role;
+GRANT ROLE loader_role TO ROLE SYSADMIN;
+GRANT ROLE transformer_role TO ROLE SYSADMIN;
+GRANT ROLE reporter_role TO ROLE SYSADMIN;
+
+USE ROLE SYSADMIN;
+CREATE WAREHOUSE IF NOT EXISTS flights_wh
+  WAREHOUSE_SIZE = XSMALL
+  AUTO_SUSPEND = 60
+  AUTO_RESUME = TRUE
+  INITIALLY_SUSPENDED = TRUE;
+
+CREATE DATABASE IF NOT EXISTS flights_db;
+CREATE SCHEMA IF NOT EXISTS flights_db.raw;
+CREATE SCHEMA IF NOT EXISTS flights_db.staging;
+CREATE SCHEMA IF NOT EXISTS flights_db.marts;
+
+GRANT USAGE ON WAREHOUSE flights_wh TO ROLE loader_role;
+GRANT USAGE ON WAREHOUSE flights_wh TO ROLE transformer_role;
+GRANT USAGE ON WAREHOUSE flights_wh TO ROLE reporter_role;
+
+GRANT USAGE ON DATABASE flights_db TO ROLE loader_role;
+GRANT USAGE ON DATABASE flights_db TO ROLE transformer_role;
+GRANT USAGE ON DATABASE flights_db TO ROLE reporter_role;
+
+GRANT USAGE, CREATE TABLE ON SCHEMA flights_db.raw TO ROLE loader_role;
+GRANT ALL ON ALL TABLES IN SCHEMA flights_db.raw TO ROLE loader_role;
+GRANT ALL ON FUTURE TABLES IN SCHEMA flights_db.raw TO ROLE loader_role;
+
+GRANT USAGE ON SCHEMA flights_db.raw TO ROLE transformer_role;
+GRANT SELECT ON ALL TABLES IN SCHEMA flights_db.raw TO ROLE transformer_role;
+GRANT SELECT ON FUTURE TABLES IN SCHEMA flights_db.raw TO ROLE transformer_role;
+GRANT ALL ON SCHEMA flights_db.staging TO ROLE transformer_role;
+GRANT ALL ON SCHEMA flights_db.marts TO ROLE transformer_role;
+
+GRANT USAGE ON SCHEMA flights_db.marts TO ROLE reporter_role;
+GRANT SELECT ON ALL TABLES IN SCHEMA flights_db.marts TO ROLE reporter_role;
+GRANT SELECT ON FUTURE TABLES IN SCHEMA flights_db.marts TO ROLE reporter_role;
+GRANT SELECT ON ALL VIEWS IN SCHEMA flights_db.marts TO ROLE reporter_role;
+GRANT SELECT ON FUTURE VIEWS IN SCHEMA flights_db.marts TO ROLE reporter_role;
+
+USE ROLE SECURITYADMIN;
+CREATE USER IF NOT EXISTS dlt_user PASSWORD = 'REPLACE_WITH_LONG_PASSWORD_1' TYPE = LEGACY_SERVICE DEFAULT_ROLE = loader_role DEFAULT_WAREHOUSE = flights_wh;
+CREATE USER IF NOT EXISTS dbt_user PASSWORD = 'REPLACE_WITH_LONG_PASSWORD_2' TYPE = LEGACY_SERVICE DEFAULT_ROLE = transformer_role DEFAULT_WAREHOUSE = flights_wh;
+CREATE USER IF NOT EXISTS streamlit_user PASSWORD = 'REPLACE_WITH_LONG_PASSWORD_3' TYPE = LEGACY_SERVICE DEFAULT_ROLE = reporter_role DEFAULT_WAREHOUSE = flights_wh;
+GRANT ROLE loader_role TO USER dlt_user;
+GRANT ROLE transformer_role TO USER dbt_user;
+GRANT ROLE reporter_role TO USER streamlit_user;
