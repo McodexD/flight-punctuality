@@ -191,6 +191,7 @@ It should print `('DLT_USER', 'LOADER_ROLE', 'FLIGHTS_WH', 'FLIGHTS_DB')`.
 ### With Dagster
 
 ```bash
+mkdir -p .dagster_home
 export DAGSTER_HOME="$PWD/.dagster_home"
 dagster dev -f orchestration/definitions.py
 ```
